@@ -6,6 +6,9 @@ This repository contains code and cases used in the "OpenFOAM coding - recurring
 
 ### Where do I start?
 
+First load a version of OpenFOAM - this code and cases here have been tested
+ against OpenFOAM-v2412.
+
 You can compile the solver with
 
 ```bash
