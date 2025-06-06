@@ -1,0 +1,4 @@
+diffusivityLaw.C
+advectionDiffusionFoam.C
+
+EXE = $(FOAM_USER_APPBIN)/advectionDiffusionFoam
