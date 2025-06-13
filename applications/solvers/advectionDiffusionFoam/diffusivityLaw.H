@@ -81,7 +81,7 @@ public:
     // Constructors
 
         //- Default construct
-        diffusivityLaw(const fvMesh& mesh);
+        diffusivityLaw(const fvMesh& mesh, const word& dictName);
 
 
     //- Destructor
@@ -90,16 +90,14 @@ public:
 
     // Member Functions
 
-    // Access
+        //- Update the DT field
+        void update(const volScalarField& T);
 
-        //- Do nothing
-        void test();
-
-    // Check
-
-    // Edit
-
-    // Write
+        //- Return read-only access to the DT field
+        const volScalarField& DT()
+        {
+            return DT_;
+        }
 
 };
 

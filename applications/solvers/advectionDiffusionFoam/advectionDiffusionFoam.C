@@ -54,11 +54,8 @@ int main(int argc, char *argv[])
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-
     // Create diffusivity law
-    diffusivityLaw diffLaw(mesh);
-    diffLaw.test();
-
+    diffusivityLaw diffLaw(mesh, "transportProperties");
 
     Info<< "\nCalculating temperature distribution\n" << endl;
 
@@ -66,11 +63,15 @@ int main(int argc, char *argv[])
     {
         Info<< "Time = " << runTime.timeName() << nl << endl;
 
+        // Update the diffusivity field
+        diffLaw.update(T);
+
         fvScalarMatrix TEqn
         (
             fvm::ddt(T)
           + fvm::div(phi, T)
-         == fvm::laplacian(DT, T)
+         == fvm::laplacian(diffLaw.DT(), T)
+          + diffLaw.source(T)
         );
 
         TEqn.solve();

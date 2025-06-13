@@ -31,7 +31,7 @@ License
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-Foam::diffusivityLaw::diffusivityLaw(const fvMesh& mesh)
+Foam::diffusivityLaw::diffusivityLaw(const fvMesh& mesh, const word& dictName)
 :
     DT_
     (
@@ -40,7 +40,7 @@ Foam::diffusivityLaw::diffusivityLaw(const fvMesh& mesh)
             "DT",
             mesh.time().timeName(),
             mesh,
-            IOobject::MUST_READ,
+            IOobject::NO_READ,
             IOobject::AUTO_WRITE
         ),
         mesh,
@@ -48,7 +48,27 @@ Foam::diffusivityLaw::diffusivityLaw(const fvMesh& mesh)
     ),
     A0_(dimViscosity, 0.0),
     A1_(dimViscosity/dimTemperature, 0.0)
-{}
+{
+    IOdictionary dict
+    (
+        IOobject
+        (
+            dictName,
+            mesh.time().constant(),
+            mesh,
+            IOobject::MUST_READ,
+            IOobject::NO_WRITE
+        )
+    );
+
+    A0_ = dimensionedScalar("A0", dict);
+    A1_ = dimensionedScalar("A1", dict);
+
+    Info<< "A0 = " << A0_ << nl
+        << "A1 = " << A1_ << endl;
+
+    DT_ = A0_;
+}
 
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
@@ -59,9 +79,9 @@ Foam::diffusivityLaw::~diffusivityLaw()
 
 // * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * * //
 
-void Foam::diffusivityLaw::test()
+void Foam::diffusivityLaw::update(const volScalarField& T)
 {
-    Info<< "Hello world" << endl;
+    DT_ = A0_ + A1_*T;
 }
 
 
